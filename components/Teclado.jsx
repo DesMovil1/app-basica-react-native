@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Calcular } from './Calcular';
+import { Icon } from './Icon';
+import { Historial } from './Historial';
 
 export const Teclado = () => {
   const [operacion, setOperacion] = useState('');
+  const [mostrarResultado, setMostrarResultado] = useState(false);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [agregarAlHistorial, setHistorial] = useState(false);
 
   const handlePress = (button) => {
-    setOperacion(operacion + button);
+    if (button === '=') {
+      if (operacion !== '') {
+        setMostrarResultado(true);
+        setHistorial(operacion);
+      }
+    } else if (button === 'C') {
+      setOperacion(operacion.slice(0, -1));
+    } else {
+      setOperacion(mostrarResultado ? button : operacion + button);
+      if (mostrarResultado) setMostrarResultado(false);
+    }
+  };
+
+  const abrirHistorial = () => {
+    setMostrarHistorial(true);
   };
 
   return (
     <>
-      <Text style={styles.operacion}>{operacion}</Text>
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.button} onPress={abrirHistorial}>
+          <Icon/>
+        </TouchableOpacity>
+        {mostrarHistorial && <Historial mostrar={mostrarHistorial} agregar={agregarAlHistorial} onClose={() => setMostrarHistorial(false)} />}
+        <Text style={styles.operacion}>{operacion}</Text>
+        {mostrarResultado && <Calcular operacion={operacion} onClose={() => { setOperacion(''); setMostrarResultado(false); }} />}
+
+      </View>
+
       <View style={styles.cuadricula}>
         <View style={styles.row}>
           <TouchableOpacity style={styles.btn} onPress={() => handlePress('7')}>
@@ -61,7 +90,10 @@ export const Teclado = () => {
           <TouchableOpacity style={styles.btn} onPress={() => handlePress('+')}>
             <Text>+</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn} onPress={() => setOperacion('')}>
+          <TouchableOpacity style={styles.btn} onPress={() => handlePress('C')}>
+            <Text>C</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn} onPress={() => handlePress('=')}>
             <Text>=</Text>
           </TouchableOpacity>
         </View>
@@ -72,16 +104,16 @@ export const Teclado = () => {
 
 const styles = StyleSheet.create({
   operacion:{
-    padding:5,
-    textAlign:'center',
-    marginTop:25,
-    fontSize:17,
-    fontWeight:'bold'
+    padding: 5,
+    textAlign: 'center',
+    marginTop: 25,
+    fontSize: 17,
+    fontWeight: 'bold'
   },
   cuadricula: {
     padding: 10,
-    flex:1,
-    justifyContent:'flex-end'
+    flex: 1,
+    justifyContent: 'flex-end'
   },
   row: {
     flexDirection: 'row',
@@ -95,5 +127,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 35,
+  },
+  button: {
+    paddingRight:10,
+    flex: 1,
+    alignItems: 'flex-end',
   },
 });

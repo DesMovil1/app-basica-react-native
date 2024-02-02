@@ -1,22 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Teclado } from './components/Teclado';
 
 export default function App() {
   return (
-   <>
-      <Text style={styles.container}>Calculadora Sencilla</Text>
-      <Teclado/>
+    <>
+      <View style={styles.container}>
+        <View style={styles.row}>
+          <Text style={styles.text}>Calculadora Sencilla</Text>
+        </View>
+      </View>
+      <Teclado />
       <StatusBar style="auto" />
-   </>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 70,
-    fontSize:25,
-    fontWeight:'bold',
-    textAlign:'center'
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingLeft:20
+  }
 });
